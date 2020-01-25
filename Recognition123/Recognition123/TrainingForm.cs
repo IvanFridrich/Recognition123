@@ -21,7 +21,7 @@ namespace Recognition123
 
             InitializeComponent();
 
-            ThreadPool.QueueUserWorkItem(TrainTheAnn); 
+            ThreadPool.QueueUserWorkItem(TrainTheAnn);
         }
 
         public void TrainTheAnn(Object stateInfo)
@@ -61,7 +61,7 @@ namespace Recognition123
 
             ANN.Train(inputs, expected, Epochs, OnTrainingProgress);
             FormClosing -= TrainingForm_FormClosing;
-            
+
             Invoke(new Action(() =>
             {
                 Close();

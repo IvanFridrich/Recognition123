@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Xml.Serialization;
+﻿using System.Drawing;
 
 
 namespace Utils

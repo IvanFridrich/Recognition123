@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using System.Configuration;
 
 namespace Recognition123
 {
@@ -14,7 +10,7 @@ namespace Recognition123
         /// Instance of the Artifitial Nerual Network
         /// </summary>
         private FeedForwardANN ANN { get; set; }
-        
+
         public MainForm()
         {
             InitializeComponent();
@@ -41,7 +37,7 @@ namespace Recognition123
             const int imageWidth = 15;
             const int imageHeight = 20;
 
-            var ann  = new FeedForwardANN(imageWidth * imageHeight, (int)numericUpDownHiddenLayerSize.Value, 3);
+            var ann = new FeedForwardANN(imageWidth * imageHeight, (int)numericUpDownHiddenLayerSize.Value, 3);
 
             TrainingForm trainingForm = new TrainingForm(ann, (int)numericUpDownEpochs.Value);
             trainingForm.ShowDialog();
@@ -62,7 +58,7 @@ namespace Recognition123
                 labelRecognitionResult.Text = "Train the ANN first!";
                 return;
             }
-            
+
             Bitmap input = Utils.Utils.MovePictureContentToUpperLeftCorner(drawingBox.GetBitmap());
             var inputVector = Utils.Utils.BitmapToVector(input);
             var output = ANN.CalcOutput(inputVector);

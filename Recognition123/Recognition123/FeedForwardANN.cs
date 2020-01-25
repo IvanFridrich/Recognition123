@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Recognition123
 {
@@ -127,7 +126,7 @@ namespace Recognition123
 
                     if (iters % 50 == 0 && trainingProgressDelgate != null)
                     {
-                        double progress = (double)iters/(double)totalIters;
+                        double progress = (double)iters / (double)totalIters;
                         DateTime now = DateTime.Now;
                         double totalSeconds = (now - start).TotalSeconds / progress * (1 - progress);
 

@@ -5,25 +5,48 @@ using System.Linq;
 namespace Recognition123
 {
 
+    /// <summary>
+    /// Delegate for reporting progress of training of the ANN.
+    /// </summary>
+    /// <param name="perc">Percentual progress (0-100)</param>
+    /// <param name="eta">Estimated time to finish</param>
     public delegate void TrainingProgressDelgate(int perc, TimeSpan eta);
+
+    /// <summary>
+    /// Structure for holding results of recognition by ANN.
+    /// </summary>
     public class FeedForwardANNOutput
     {
-        public double[] values;
+        /// <summary>
+        /// Output vector
+        /// </summary>
+        public double[] outputValues;
+
+        /// <summary>
+        /// Hidden layer outputs vector
+        /// </summary>
         public double[] hiddenLayerOutput;
 
+        /// <summary>
+        /// Normalizes output so the sum of the outputs will be aprox. 1.
+        /// </summary>
         public void Normalize()
         {
-            double sum = values.Sum();
+            double sum = outputValues.Sum();
 
-            for (int index = 0; index < values.Length; index++)
+            for (int index = 0; index < outputValues.Length; index++)
             {
-                values[index] /= sum;
+                outputValues[index] /= sum;
             }
         }
 
-        public string Output()
+        /// <summary>
+        /// Converts output vector to a simplified string. 
+        /// </summary>
+        /// <returns>String describing the output vector</returns>
+        public string SimplifiedOutputAsString()
         {
-            if (values.All(x => x < 0.7)) return "Not sure";
+            if (outputValues.All(x => x < 0.7)) return "Not sure";
 
             switch (MaxOutputIndex())
             {
@@ -32,28 +55,37 @@ namespace Recognition123
                 case 2: { return "Three"; }
             }
 
+            // The program shouldn't get here!
             return "Internal Error";
         }
 
+        /// <summary>
+        /// Converts output vector to a string.
+        /// </summary>
+        /// <returns>Output vector as a string</returns>
         public override string ToString()
         {
-            string one = string.Format("{0:0.00}", Math.Round(values[0], 2));
-            string two = string.Format("{0:0.00}", Math.Round(values[1], 2));
-            string three = string.Format("{0:0.00}", Math.Round(values[2], 2));
+            string one = string.Format("{0:0.00}", Math.Round(outputValues[0], 2));
+            string two = string.Format("{0:0.00}", Math.Round(outputValues[1], 2));
+            string three = string.Format("{0:0.00}", Math.Round(outputValues[2], 2));
 
             return $"One={one} Two={two} Three={three}";
         }
 
-        public int MaxOutputIndex()
+        /// <summary>
+        /// Returns index of the highest value in the output vector.
+        /// </summary>
+        /// <returns>The highest value index in output values</returns>
+        private int MaxOutputIndex()
         {
             double max = double.MinValue;
             int maxIndex = -1;
 
-            for (int i = 0; i < values.Length; ++i)
+            for (int i = 0; i < outputValues.Length; ++i)
             {
-                if (values[i] > max)
+                if (outputValues[i] > max)
                 {
-                    max = values[i];
+                    max = outputValues[i];
                     maxIndex = i;
                 }
             }
@@ -64,10 +96,27 @@ namespace Recognition123
 
     public class FeedForwardANN
     {
+        /// <summary>
+        /// Hiddel layer neurons
+        /// </summary>
         public Neuron[] hiddenLayer;
-        public Neuron[] outputLayer;
-        bool stopTraining;
 
+        /// <summary>
+        /// Output layer neurons
+        /// </summary>
+        public Neuron[] outputLayer;
+
+        /// <summary>
+        /// Stop flag for stopping the training routine
+        /// </summary>
+        bool stopTrainingFlag;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="inputSize">Input vector size</param>
+        /// <param name="hiddenLayerSize">Hidden layer neuron count</param>
+        /// <param name="outputLayerSize">Size of the output vector</param>
         public FeedForwardANN(int inputSize, int hiddenLayerSize, int outputLayerSize)
         {
             hiddenLayer = new Neuron[hiddenLayerSize];
@@ -78,29 +127,45 @@ namespace Recognition123
             outputLayer = new Neuron[outputLayerSize];
             for (int i = 0; i < outputLayer.Length; ++i)
                 outputLayer[i] = new Neuron(hiddenLayerSize);
-
         }
 
+        /// <summary>
+        /// Calculate output vector based on input vector.
+        /// </summary>
+        /// <param name="inputVector">Input vector</param>
+        /// <returns>Output vector</returns>
         public FeedForwardANNOutput CalcOutput(double[] inputVector)
         {
             FeedForwardANNOutput output = new FeedForwardANNOutput();
 
+            // Calculate outputs of the hidden layer
             output.hiddenLayerOutput = new double[hiddenLayer.Length];
             for (int i = 0; i < hiddenLayer.Length; ++i)
                 output.hiddenLayerOutput[i] = hiddenLayer[i].CalcOutput(inputVector);
 
-            output.values = new double[outputLayer.Length];
+            // Calculate outputs of the output layer
+            output.outputValues = new double[outputLayer.Length];
             for (int i = 0; i < outputLayer.Length; ++i)
-                output.values[i] = outputLayer[i].CalcOutput(output.hiddenLayerOutput);
+                output.outputValues[i] = outputLayer[i].CalcOutput(output.hiddenLayerOutput);
 
             return output;
         }
 
+        /// <summary>
+        /// Stops training
+        /// </summary>
         public void StopTraining()
         {
-            stopTraining = true;
+            stopTrainingFlag = true;
         }
 
+        /// <summary>
+        /// Trains the ANN - Gradient Descent method
+        /// </summary>
+        /// <param name="inputs">List of input vectors</param>
+        /// <param name="expectedOutputs">List of expected output vectors</param>
+        /// <param name="epochs">Number of training epochs</param>
+        /// <param name="trainingProgressDelgate">Report progress callback</param>
         public void Train(List<double[]> inputs, List<double[]> expectedOutputs, int epochs, TrainingProgressDelgate trainingProgressDelgate)
         {
             var indexes = Enumerable.Range(0, inputs.Count).ToList();
@@ -126,34 +191,39 @@ namespace Recognition123
 
                     if (iters % 50 == 0 && trainingProgressDelgate != null)
                     {
+                        // report progress
                         double progress = (double)iters / (double)totalIters;
                         DateTime now = DateTime.Now;
                         double totalSeconds = (now - start).TotalSeconds / progress * (1 - progress);
-
                         trainingProgressDelgate?.Invoke((int)(progress * 100.0), TimeSpan.FromSeconds(totalSeconds));
                     }
 
-                    if (stopTraining)
+                    // If stop flag is true - stop training
+                    if (stopTrainingFlag)
                     {
-                        stopTraining = false;
+                        stopTrainingFlag = false;
                         return;
                     }
                 }
             }
         }
-
+        /// <summary>
+        /// Single input training - Gradient Descent method
+        /// </summary>
+        /// <param name="input">Input vector</param>
+        /// <param name="expectedOutput">Expected output vector</param>
         private void Train(double[] input, double[] expectedOutput)
         {
             var output = CalcOutput(input);
 
-            double[,] gradWout = new double[output.values.Length, output.hiddenLayerOutput.Length];
-            double[] biasesOut = new double[output.values.Length];
+            double[,] gradWout = new double[output.outputValues.Length, output.hiddenLayerOutput.Length];
+            double[] biasesOut = new double[output.outputValues.Length];
 
             // output stage
-            for (int i = 0; i < output.values.Length; ++i)
+            for (int i = 0; i < output.outputValues.Length; ++i)
             {
-                double derE_derOut = output.values[i] - expectedOutput[i];
-                double derOut_derNet = output.values[i] * (1.0 - output.values[i]);
+                double derE_derOut = output.outputValues[i] - expectedOutput[i];
+                double derOut_derNet = output.outputValues[i] * (1.0 - output.outputValues[i]);
 
                 // weights
                 for (int j = 0; j < output.hiddenLayerOutput.Length; ++j)
@@ -174,10 +244,10 @@ namespace Recognition123
             for (int j = 0; j < output.hiddenLayerOutput.Length; ++j)
             {
                 double grad = 0;
-                for (int k = 0; k < output.values.Length; ++k)
+                for (int k = 0; k < output.outputValues.Length; ++k)
                 {
-                    double derE_derOut = output.values[k] - expectedOutput[k];
-                    double derOut_derNet = output.values[k] * (1.0 - output.values[k]);
+                    double derE_derOut = output.outputValues[k] - expectedOutput[k];
+                    double derOut_derNet = output.outputValues[k] * (1.0 - output.outputValues[k]);
                     double derNeto1_derOutH1 = outputLayer[k].Weights[j];
 
                     grad += derE_derOut * derOut_derNet * derNeto1_derOutH1;

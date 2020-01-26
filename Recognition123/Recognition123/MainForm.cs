@@ -11,6 +11,10 @@ namespace Recognition123
         /// </summary>
         private FeedForwardANN ANN { get; set; }
 
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
@@ -63,7 +67,7 @@ namespace Recognition123
             var inputVector = Utils.Utils.BitmapToVector(input);
             var output = ANN.CalcOutput(inputVector);
             output.Normalize();
-            labelRecognitionResult.Text = output.Output();
+            labelRecognitionResult.Text = output.SimplifiedOutputAsString();
             labelProbablilities.Text = output.ToString();
         }
     }

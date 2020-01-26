@@ -5,6 +5,11 @@ namespace Utils
 {
     class Utils
     {
+        /// <summary>
+        /// Converts bitmap to double vector of zeroes nad ones.
+        /// </summary>
+        /// <param name="bmap">Input bitmap</param>
+        /// <returns>Vector of doubles</returns>
         public static double[] BitmapToVector(Bitmap bmap)
         {
             var vector = new double[bmap.Height * bmap.Width];
@@ -18,6 +23,11 @@ namespace Utils
             return vector;
         }
 
+        /// <summary>
+        /// Moves the content of the image to the upper left corner
+        /// </summary>
+        /// <param name="input">Input bitmap</param>
+        /// <returns>Shifted input bitmap</returns>
         public static Bitmap MovePictureContentToUpperLeftCorner(Bitmap input)
         {
             int x1 = 0;

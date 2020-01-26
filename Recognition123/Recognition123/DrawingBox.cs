@@ -4,7 +4,10 @@ using System.Windows.Forms;
 
 namespace Recognition123
 {
-
+    /// <summary>
+    /// Box for drawing in back and white.
+    /// Hold left mouse button for drawing black and right mouse button for drawing white.
+    /// </summary>
     public class DrawingBox : PictureBox
     {
         /// <summary>
@@ -87,6 +90,10 @@ namespace Recognition123
             }
         }
 
+        /// <summary>
+        /// Return s current drawing canvas in size of 15x20 pixels. 
+        /// </summary>
+        /// <returns>15x20 pixel black and white bitmap</returns>
         public Bitmap GetBitmap()
         {
             Bitmap bitmap = new Bitmap(15, 20);
@@ -110,6 +117,9 @@ namespace Recognition123
             return bitmap;
         }
 
+        /// <summary>
+        /// Clears current canvas. All pixels will be white.
+        /// </summary>
         public void Clear()
         {
             Bitmap background = new Bitmap(Width, Height);

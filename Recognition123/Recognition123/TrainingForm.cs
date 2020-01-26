@@ -9,11 +9,26 @@ using System.Windows.Forms;
 
 namespace Recognition123
 {
+    /// <summary>
+    /// Form that traing the ANN in the background and provides progress of the training and ETA.
+    /// </summary>
     public partial class TrainingForm : Form
     {
-        private int Epochs { get; }
+        /// <summary>
+        /// The ANN that will be trained
+        /// </summary>
         private FeedForwardANN ANN { get; }
 
+        /// <summary>
+        /// Number of training epochs
+        /// </summary>
+        private int Epochs { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="ann">The ANN that will be trained</param>
+        /// <param name="epochs">Number of epochs of the training</param>
         public TrainingForm(FeedForwardANN ann, int epochs)
         {
             ANN = ann;
@@ -21,9 +36,14 @@ namespace Recognition123
 
             InitializeComponent();
 
+            // Start the training in the background
             ThreadPool.QueueUserWorkItem(TrainTheAnn);
         }
 
+        /// <summary>
+        /// Loads the training set and trains the ann. Can be stopped.
+        /// </summary>
+        /// <param name="stateInfo">Unused paramter</param>
         public void TrainTheAnn(Object stateInfo)
         {
             // load input data
@@ -59,15 +79,22 @@ namespace Recognition123
                 expected.Add(expected3);
             }
 
+            // train the ann
             ANN.Train(inputs, expected, Epochs, OnTrainingProgress);
+            
+            // close the form
             FormClosing -= TrainingForm_FormClosing;
-
             Invoke(new Action(() =>
             {
                 Close();
             }));
         }
 
+        /// <summary>
+        /// Reports progress
+        /// </summary>
+        /// <param name="perc">Percentual progress</param>
+        /// <param name="eta">Estimated period to end of training</param>
         void OnTrainingProgress(int perc, TimeSpan eta)
         {
             Invoke(new Action(() =>
@@ -77,6 +104,11 @@ namespace Recognition123
             }));
         }
 
+        /// <summary>
+        /// Form closing handler
+        /// </summary>
+        /// <param name="sender">Unused param</param>
+        /// <param name="e">Unused param</param>
         private void TrainingForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;

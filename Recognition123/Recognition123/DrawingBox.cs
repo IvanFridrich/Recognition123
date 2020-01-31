@@ -11,17 +11,17 @@ namespace Recognition123
     public class DrawingBox : PictureBox
     {
         /// <summary>
-        /// Delegete for signaling that drawing has ended (mouse left up or mouse left)
+        /// Delegate for signaling that drawing has ended (mouse left up or mouse left)
         /// </summary>
         public delegate void DrawingDoneDelegate();
 
         /// <summary>
-        /// Event signalizing thath drawing has ended (mouse left up or mouse left)
+        /// Event signalizing that drawing has ended (mouse left up or mouse left)
         /// </summary>
         public event DrawingDoneDelegate DrawingDone;
 
         /// <summary>
-        /// Contructor
+        /// Constructor
         /// </summary>
         public DrawingBox()
         {

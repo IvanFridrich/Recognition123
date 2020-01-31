@@ -104,7 +104,7 @@
             this.groupBoxTraining.Controls.Add(this.numericUpDownEpochs);
             this.groupBoxTraining.Location = new System.Drawing.Point(10, 10);
             this.groupBoxTraining.Name = "groupBoxTraining";
-            this.groupBoxTraining.Size = new System.Drawing.Size(580, 114);
+            this.groupBoxTraining.Size = new System.Drawing.Size(624, 114);
             this.groupBoxTraining.TabIndex = 15;
             this.groupBoxTraining.TabStop = false;
             this.groupBoxTraining.Text = "ANN training";
@@ -158,7 +158,7 @@
             this.groupBox1.Controls.Add(this.labelRecognitionResult);
             this.groupBox1.Location = new System.Drawing.Point(10, 131);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(580, 375);
+            this.groupBox1.Size = new System.Drawing.Size(624, 401);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "123 recognition";
@@ -195,12 +195,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(602, 544);
+            this.ClientSize = new System.Drawing.Size(646, 544);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBoxTraining);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "Reco123";
+            this.Text = "Recognition123";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEpochs)).EndInit();
             this.groupBoxTraining.ResumeLayout(false);
             this.groupBoxTraining.PerformLayout();

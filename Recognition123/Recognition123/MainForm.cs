@@ -7,7 +7,7 @@ namespace Recognition123
     public partial class MainForm : Form
     {
         /// <summary>
-        /// Instance of the Artifitial Nerual Network
+        /// Instance of the Artificial Neural Network
         /// </summary>
         private FeedForwardANN ANN { get; set; }
 

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace Recognition123
 {
     /// <summary>
-    /// Form that traing the ANN in the background and provides progress of the training and ETA.
+    /// Form that training the ANN in the background and provides progress of the training and ETA.
     /// </summary>
     public partial class TrainingForm : Form
     {
@@ -41,9 +41,9 @@ namespace Recognition123
         }
 
         /// <summary>
-        /// Loads the training set and trains the ann. Can be stopped.
+        /// Loads the training set and trains the ANN. Can be stopped.
         /// </summary>
-        /// <param name="stateInfo">Unused paramter</param>
+        /// <param name="stateInfo">Unused parameter</param>
         public void TrainTheAnn(Object stateInfo)
         {
             // load input data
@@ -79,7 +79,7 @@ namespace Recognition123
                 expected.Add(expected3);
             }
 
-            // train the ann
+            // train the ANN
             ANN.Train(inputs, expected, Epochs, OnTrainingProgress);
             
             // close the form

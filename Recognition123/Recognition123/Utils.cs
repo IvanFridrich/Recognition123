@@ -3,10 +3,13 @@
 
 namespace Utils
 {
+    /// <summary>
+    /// Utility functions for working with bitmaps.
+    /// </summary>
     class Utils
     {
         /// <summary>
-        /// Converts bitmap to double vector of zeroes nad ones.
+        /// Converts bitmap to double vector of zeros and ones.
         /// </summary>
         /// <param name="bmap">Input bitmap</param>
         /// <returns>Vector of doubles</returns>

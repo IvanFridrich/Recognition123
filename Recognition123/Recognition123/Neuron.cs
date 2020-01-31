@@ -2,6 +2,9 @@
 
 namespace Recognition123
 {
+    /// <summary>
+    /// Class simulating human brain neuron.
+    /// </summary>
     public class Neuron
     {
         /// <summary>
@@ -25,14 +28,14 @@ namespace Recognition123
         /// <param name="inputVectorSize">Size of the input vector</param>
         public Neuron(int inputVectorSize)
         {
-            InitRandom(inputVectorSize);
+            InitWeightsRandom(inputVectorSize);
         }
 
         /// <summary>
         /// Initialize neuron weights by random numbers
         /// </summary>
         /// <param name="inputVectorSize">Size of the input vector</param>
-        private void InitRandom(int inputVectorSize)
+        private void InitWeightsRandom(int inputVectorSize)
         {
             Weights = new double[inputVectorSize];
 
@@ -71,7 +74,7 @@ namespace Recognition123
         /// Activation function
         /// </summary>
         /// <param name="x">Input value</param>
-        /// <returns>Output value (0 - 1)</returns>
+        /// <returns>Output value (0.0 - 1.0)</returns>
         static private double Sigmoid(double x)
         {
             return 1.0 / (1 + Math.Exp(-x));

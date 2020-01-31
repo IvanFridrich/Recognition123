@@ -28,7 +28,7 @@ namespace Recognition123
         public double[] hiddenLayerOutput;
 
         /// <summary>
-        /// Normalizes output so the sum of the outputs will be aprox. 1.
+        /// Normalizes output so the sum of the outputs will be approx. 1.
         /// </summary>
         public void Normalize()
         {
@@ -97,7 +97,7 @@ namespace Recognition123
     public class FeedForwardANN
     {
         /// <summary>
-        /// Hiddel layer neurons
+        /// Hidden layer neurons
         /// </summary>
         public Neuron[] hiddenLayer;
 
@@ -182,7 +182,7 @@ namespace Recognition123
 
                 for (int j = 0; j < inputs.Count; ++j)
                 {
-                    // take random input and coresponding expected output and train the ANN
+                    // take random input and corresponding expected output and train the ANN
                     var x = r.Next() % indexesClone.Count;
                     int ind = indexesClone[x];
                     indexesClone.RemoveAt(x);

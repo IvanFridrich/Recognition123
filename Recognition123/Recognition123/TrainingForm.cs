@@ -56,7 +56,7 @@ namespace Recognition123
             var data1Files = files.Where(x => new FileInfo(x).Name.StartsWith("1"));
             foreach (var f in data1Files)
             {
-                var d1 = Utils.Utils.BitmapToVector((Bitmap)Image.FromFile(f));
+                var d1 = Utils.Utils.BitmapToVector(Utils.Utils.Centrify((Bitmap)Image.FromFile(f)));
                 inputs.Add(d1);
                 expected.Add(expected1);
             }
@@ -65,7 +65,7 @@ namespace Recognition123
             var data2Files = files.Where(x => new FileInfo(x).Name.StartsWith("2"));
             foreach (var f in data2Files)
             {
-                var d2 = Utils.Utils.BitmapToVector((Bitmap)Image.FromFile(f));
+                var d2 = Utils.Utils.BitmapToVector(Utils.Utils.Centrify((Bitmap)Image.FromFile(f)));
                 inputs.Add(d2);
                 expected.Add(expected2);
             }
@@ -74,7 +74,7 @@ namespace Recognition123
             var data3Files = files.Where(x => new FileInfo(x).Name.StartsWith("3"));
             foreach (var f in data3Files)
             {
-                var d3 = Utils.Utils.BitmapToVector((Bitmap)Image.FromFile(f));
+                var d3 = Utils.Utils.BitmapToVector(Utils.Utils.Centrify((Bitmap)Image.FromFile(f)));
                 inputs.Add(d3);
                 expected.Add(expected3);
             }

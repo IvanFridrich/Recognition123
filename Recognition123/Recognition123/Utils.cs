@@ -27,62 +27,142 @@ namespace Utils
         }
 
         /// <summary>
-        /// Moves the content of the image to the upper left corner
+        /// Structure holding information about bitmap content distances from edges.
         /// </summary>
-        /// <param name="input">Input bitmap</param>
-        /// <returns>Shifted input bitmap</returns>
-        public static Bitmap MovePictureContentToUpperLeftCorner(Bitmap input)
+        struct Distances
         {
-            int x1 = 0;
-            int y1 = 0;
-
-            // x1 finding
-            for (int x = 0; x < input.Width; ++x)
-            {
-                bool found = false;
-                for (int y = 0; y < input.Height; ++y)
-                {
-                    if (input.GetPixel(x, y).R == 0)
-                    {
-                        x1 = x;
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (found) break;
-            }
-
-            // y1 finding
-            for (int y = 0; y < input.Height; ++y)
-            {
-                bool found = false;
-                for (int x = 0; x < input.Width; ++x)
-                {
-                    if (input.GetPixel(x, y).R == 0)
-                    {
-                        y1 = y;
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (found) break;
-            }
-
-            Bitmap output = new Bitmap(input.Width, input.Height);
-
-            for (int x = 0; x < output.Width; ++x)
-                for (int y = 0; y < output.Height; ++y)
-                    output.SetPixel(x, y, Color.FromArgb(255, 255, 255));
-
-            for (int x = x1; x < input.Width; ++x)
-                for (int y = y1; y < input.Height; ++y)
-                    output.SetPixel(x - x1, y - y1, input.GetPixel(x, y));
-
-            return output;
+            public int _distanceFromLeft;
+            public int _distanceFromRight;
+            public int _distanceFromTop;
+            public int _distanceFromBottom;
         }
 
+        /// <summary>
+        /// Returns distances of black bitmap content from edges.
+        /// </summary>
+        /// <param name="input">Input bitmap (black and white)</param>
+        /// <returns>Distances from edges</returns>
+        static Distances GetDistancesToEdge(Bitmap input)
+        {
+            Distances distances;
+
+            distances._distanceFromLeft = int.MaxValue;
+            distances._distanceFromRight = int.MaxValue;
+            distances._distanceFromTop = int.MaxValue;
+            distances._distanceFromBottom = int.MaxValue;
+
+            for (int y = 0; y < input.Height; ++y)
+            {
+                bool blackDetectedFromLeft = false;
+                int lastBlackX = 0;
+
+                for (int x = 0; x < input.Width; ++x)
+                {
+                    Color pixelColor = input.GetPixel(x, y);
+
+                    // updating left distance
+                    if (!blackDetectedFromLeft && pixelColor == Color.FromArgb(255, 0, 0, 0))
+                    {
+                        distances._distanceFromLeft = x < distances._distanceFromLeft ? x : distances._distanceFromLeft;
+                        blackDetectedFromLeft = true;
+                    }
+
+                    // updating right distance
+                    if (pixelColor == Color.FromArgb(255, 0, 0, 0))
+                    {
+                        lastBlackX = x;
+                    }
+                    if (x == input.Width - 1)
+                    {
+                        int dRight = input.Width - lastBlackX - 1;
+                        distances._distanceFromRight = dRight < distances._distanceFromRight
+                            ? dRight
+                            : distances._distanceFromRight;
+                    }
+                }
+            }
+
+            for (int x = 0; x < input.Width; ++x)
+            {
+                bool blackDetectedFromTop = false;
+                int lastBlackY = 0;
+
+                for (int y = 0; y < input.Height; ++y)
+                {
+                    Color pixelColor = input.GetPixel(x, y);
+
+                    // updating top distance
+                    if (!blackDetectedFromTop && pixelColor == Color.FromArgb(255, 0, 0, 0))
+                    {
+                        distances._distanceFromTop = y < distances._distanceFromTop ? y : distances._distanceFromTop;
+                        blackDetectedFromTop = true;
+                    }
+
+                    // updating bottom distance
+                    if (pixelColor == Color.FromArgb(255, 0, 0, 0))
+                    {
+                        lastBlackY = y;
+                    }
+                    if (y == input.Height - 1)
+                    {
+                        int dBOttom = input.Height - lastBlackY - 1;
+                        distances._distanceFromBottom = dBOttom < distances._distanceFromBottom
+                            ? dBOttom
+                            : distances._distanceFromBottom;
+                    }
+                }
+            }
+
+            return distances;
+        }
+
+
+        /// <summary>
+        /// Shifts content of a bitmap. New pixels are automatically white.
+        /// </summary>
+        /// <param name="input">Input bitmap</param>
+        /// <param name="right">How many pixels to shift to right. Negative value shifts to left.</param>
+        /// <param name="down">How many pixels to shift down. Negative value shifts up.</param>
+        /// <returns></returns>
+        static Bitmap ShiftBitmap(Bitmap input, int right, int down)
+        {
+            Bitmap shifted = input.Clone() as Bitmap;
+
+            for (int x = 0; x < shifted.Width; ++x)
+            {
+                for (int y = 0; y < shifted.Height; ++y)
+                {
+                    int oldX = x - right;
+                    int oldY = y - down;
+
+                    if (oldX < 0 || oldX >= input.Width || oldY < 0 || oldY >= input.Height)
+                    {
+                        shifted.SetPixel(x, y, Color.White);
+                    }
+                    else
+                    {
+                        shifted.SetPixel(x, y, input.GetPixel(oldX, oldY));
+                    }
+                }
+            }
+
+            return shifted;
+        }
+
+        /// <summary>
+        /// Centrifies black content of a bitmap.
+        /// </summary>
+        /// <param name="input">Input bitmap</param>
+        /// <returns>Centrified bitmap</returns>
+        public static Bitmap Centrify(Bitmap input)
+        {
+            Distances dist = GetDistancesToEdge(input);
+
+            int xShift = (dist._distanceFromRight - dist._distanceFromLeft) / 2;
+            int yShift = (dist._distanceFromBottom - dist._distanceFromTop) / 2;
+
+            return ShiftBitmap(input, xShift, yShift);
+        }
     }
 }
 

@@ -63,7 +63,7 @@ namespace Recognition123
                 return;
             }
 
-            Bitmap input = Utils.Utils.MovePictureContentToUpperLeftCorner(drawingBox.GetBitmap());
+            Bitmap input = Utils.Utils.Centrify(drawingBox.GetBitmap());
             var inputVector = Utils.Utils.BitmapToVector(input);
             var output = ANN.CalcOutput(inputVector);
             output.Normalize();
